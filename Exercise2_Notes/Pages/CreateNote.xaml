@@ -9,34 +9,77 @@
     xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps"
     x:Class="Exercise2_Notes.Pages.CreateNote"
     DataContext="{Binding MainViewModel, Source={StaticResource Locator}}"
-    mc:Ignorable="d" Width="361.333">
+    mc:Ignorable="d" 
+    >
 
-    <Grid Background="#FFFFFF72">
-        <TextBox x:Name="txtNote" HorizontalAlignment="Left" Margin="10,83,0,0" TextWrapping="Wrap" Text="{Binding CurrentNote.NoteContent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Height="200" Width="340" BorderThickness="2"  SelectionHighlightColor="#FF595959" Background="#FFFEFFEE" InputScope="Text" FontSize="18"  AcceptsReturn="True"/>
-        <TextBlock x:Name="txtDateTime" HorizontalAlignment="Left" Margin="10,58,0,0" TextWrapping="Wrap" Text="{Binding CurrentNote.NoteDateTime, Mode=OneWay}" VerticalAlignment="Top" Width="340" TextAlignment="Right" />
-        <Button x:Name="cmdCreateNote" Content="Add" HorizontalAlignment="Left" Margin="10,520,0,0" VerticalAlignment="Top" Width="165" Height="63" FontSize="20" RenderTransformOrigin="0,0" BorderThickness="4" Opacity="0.8" Click="cmdCreateNote_Click" />
-        <Button x:Name="cmdCancelNote" Content="Cancel" HorizontalAlignment="Left" Margin="185,520,0,0" VerticalAlignment="Top" Width="165" Height="63" FontSize="20" Opacity="0.8" BorderThickness="4" Click="cmdCancelNote_Click" />
+
+    <RelativePanel Background="#FFFFFF72">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="VisualStateGroup">
+                <VisualState x:Name="VisualStateMin800">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="800"></AdaptiveTrigger>
+                    </VisualState.StateTriggers>
+                    
+                    <VisualState.Setters>
+                        <Setter Target="NotePanel.(RelativePanel.AlignLeftWithPanel)" Value="True"/>
+                        <Setter Target="NotePanel.(RelativePanel.AlignRightWithPanel)" Value="False"/>
+                        <Setter Target="NotePanel.(RelativePanel.AlignTopWithPanel)" Value="True"/>
+
+                        <Setter Target="Map.(RelativePanel.AlignTopWithPanel)" Value="True"/>
+                        <Setter Target="Map.(RelativePanel.AlignBottomWithPanel)" Value="True"/>
+                        <Setter Target="Map.(RelativePanel.AlignRightWithPanel)" Value="True"/>
+                        <Setter Target="Map.(RelativePanel.AlignLeftWithPanel)" Value="False"/>
+                        <Setter Target="Map.(RelativePanel.Below)" Value=""/>
+                        <Setter Target="Map.(RelativePanel.RightOf)" Value="NotePanel"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="VisualStateMin0">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1"/>
+                    </VisualState.StateTriggers>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    
+    <StackPanel x:Name="NotePanel" Orientation="Vertical"
+                RelativePanel.AlignLeftWithPanel="True"
+                RelativePanel.AlignRightWithPanel="True"
+                RelativePanel.AlignTopWithPanel="True">
+            <TextBlock x:Name="txtDateTime"  TextWrapping="Wrap" Text="{Binding CurrentNote.NoteDateTime, Mode=OneWay}" VerticalAlignment="Top" Width="340" TextAlignment="Right" />
+            <TextBox x:Name="txtNote" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text="{Binding CurrentNote.NoteContent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Height="200" Width="340" BorderThickness="2"  SelectionHighlightColor="#FF595959" Background="#FFFEFFEE" InputScope="Text" FontSize="18"  AcceptsReturn="True"/>
+            <Button x:Name="cmdCreateNote" HorizontalAlignment="Stretch" Content="Add" Margin="10" Width="165"  Height="63" FontSize="20" RenderTransformOrigin="0,0" BorderThickness="4" Opacity="0.8" Click="cmdCreateNote_Click" />
+            <Button x:Name="cmdCancelNote" HorizontalAlignment="Stretch" Content="Cancel" Width="165" Height="63" FontSize="20" Opacity="0.8" BorderThickness="4" Click="cmdCancelNote_Click" />
+
+        
+
+    </StackPanel>
 
         <Maps:MapControl
-            x:Name="Map"
-            HorizontalAlignment="Left" Margin="10,288,0,0" VerticalAlignment="Top" Height="227" Width="340"
+            x:Name="Map" Height="227" Width="340"
             Center="{Binding CurrentNote.NoteLocation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             ZoomLevel="14"
-            MapServiceToken=" 5AhXIgbH1cd6OuPa8AhC~Cw3upXI1ekBcU89SFTTzWA~AjUAEgOR8lptAk6NgmLOG3pw5-PxUzqZkSIwL8leeSE4vqEYTaJqTEFcQwLeDStK">
-        
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            MapServiceToken=" 5AhXIgbH1cd6OuPa8AhC~Cw3upXI1ekBcU89SFTTzWA~AjUAEgOR8lptAk6NgmLOG3pw5-PxUzqZkSIwL8leeSE4vqEYTaJqTEFcQwLeDStK"
+            RelativePanel.AlignBottomWithPanel="True"
+            RelativePanel.AlignRightWithPanel="True"
+            RelativePanel.AlignLeftWithPanel="True"
+            RelativePanel.Below="NotePanel">
+
             <Maps:MapItemsControl ItemsSource="{x:Bind ViewModel.PointsOfInterest}">
                 <Maps:MapItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="models:PointOfInterest">
                         <Grid Maps:MapControl.Location="{x:Bind Location}"
                               Maps:MapControl.NormalizedAnchorPoint="0.5 1">
-                            <Image Source="../Assets/pin.png"></Image>
-                            <TextBlock Text="{x:Bind Description}"></TextBlock>
+                            <Image Source="../Assets/pin.png" MaxHeight="30" MaxWidth="30"></Image>
+                            <TextBlock Text="{x:Bind Description}" Margin="10,0,0,40"></TextBlock>
                         </Grid>
                     </DataTemplate>
                 </Maps:MapItemsControl.ItemTemplate>
             </Maps:MapItemsControl>
-            
+
         </Maps:MapControl>
 
-    </Grid>
+    </RelativePanel>
 </Page>

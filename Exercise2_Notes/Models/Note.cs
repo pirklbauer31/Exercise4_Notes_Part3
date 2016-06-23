@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
+using Newtonsoft.Json;
 
 namespace Exercise2_Notes.Models
 {
@@ -34,6 +35,26 @@ namespace Exercise2_Notes.Models
 
         public string NoteId { get; set; }
 
-        public Geopoint NoteLocation { get; set; }
+        public double Latitude { get; set; }
+
+        public double Longitude { get; set; }
+
+        [JsonIgnore]
+        public Geopoint NoteLocation {
+            get
+            {
+                return new Geopoint(new BasicGeoposition
+                {
+                    Latitude = Latitude,
+                    Longitude = Longitude
+                });
+            }
+            set
+            {
+                Latitude = value.Position.Latitude;
+                Longitude = value.Position.Longitude;
+            }
+        }
+
     }
 }

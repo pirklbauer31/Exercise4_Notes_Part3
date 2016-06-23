@@ -36,8 +36,21 @@ namespace Exercise2_Notes.Pages
                 ListViewNotes.Items.Add(notes[notes.Count-i]);
             }
             */
+
         }
 
         public MainViewModel ViewModel => DataContext as MainViewModel;
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+           ViewModel.UpdatePointsofInterest();
+            // ViewModel.PointsOfInterest.Add();
+        }
+
+        private void PushPin_OnTapped(object sender, TappedRoutedEventArgs e)
+        {
+            TextBlock txtMapItem = (TextBlock) e.OriginalSource;
+            ViewModel.NavigateToCreateNotePageFromMap(txtMapItem.Text);
+        }
     }
 }

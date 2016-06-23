@@ -1,5 +1,4 @@
 ﻿<Page
-    x:Class="Exercise2_Notes.Pages.ReadNote"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Exercise2_Notes.Pages"
@@ -7,27 +6,54 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:Exercise2_Notes.Models"
     xmlns:viewModels="using:Exercise2_Notes.ViewModels"
-    DataContext="{Binding MainViewModel, Source={StaticResource Locator}}"
+    xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps"
+    x:Class="Exercise2_Notes.Pages.ReadNote"
     mc:Ignorable="d" Width="361.333">
 
     <Page.Resources>
-        <DataTemplate x:Key="NoteTemplate" x:DataType="models:Note">
+        <DataTemplate x:Key="NoteTemplate">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="{Binding NoteContent}" Margin="2" TextWrapping="Wrap" Width="200"/>
-                <TextBlock Text="{Binding NoteDateTime}" Margin="2"></TextBlock>
+                <TextBlock Text="{Binding NoteDateTime}" Margin="2"/>
             </StackPanel>
 
         </DataTemplate>
     </Page.Resources>
 
+    <Page.DataContext>
+        <Binding Path="MainViewModel" Source="{StaticResource Locator}"/>
+    </Page.DataContext>
+
     <Grid Background="#FFFFFF72">
-        <ListView x:Name="ListViewNotes" HorizontalAlignment="Left" Height="544" Margin="10,86,0,0" VerticalAlignment="Top" Width="341" 
-                  ItemsSource="{x:Bind ViewModel.SearchNotes, Mode=OneWay}" 
-                  ItemTemplate="{StaticResource NoteTemplate}" 
-                  IsItemClickEnabled="True" 
-                  ItemClick="{x:Bind ViewModel.ShowPopupMenu}" />
+        <ListView x:Name="ListViewNotes" HorizontalAlignment="Left" Height="280" Margin="10,86,0,0" VerticalAlignment="Top" Width="341" 
+			ItemsSource="{x:Bind ViewModel.SearchNotes, Mode=OneWay}" 
+			ItemTemplate="{StaticResource NoteTemplate}" 
+			IsItemClickEnabled="True" 
+			ItemClick="{x:Bind ViewModel.ShowPopupMenu}" />
         <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Search for Note" VerticalAlignment="Top" FontSize="20" Width="341"/>
         <TextBox x:Name="txtSearchString" HorizontalAlignment="Left" Margin="10,42,0,0" TextWrapping="Wrap" Text="{Binding NewSearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="341" FontSize="20" />
+
+        <Maps:MapControl
+            x:Name="MapRead" Width="340"
+            Center="{Binding PointsOfInterest[0].Location, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            ZoomLevel="14"
+            MapServiceToken=" 5AhXIgbH1cd6OuPa8AhC~Cw3upXI1ekBcU89SFTTzWA~AjUAEgOR8lptAk6NgmLOG3pw5-PxUzqZkSIwL8leeSE4vqEYTaJqTEFcQwLeDStK" 
+            Margin="10,381,11,10"
+            HorizontalAlignment="Stretch">
+
+            <Maps:MapItemsControl ItemsSource="{Binding PointsOfInterest, UpdateSourceTrigger=PropertyChanged}">
+                <Maps:MapItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="models:PointOfInterest">
+                        <Grid Maps:MapControl.Location="{x:Bind Location}" Tapped="PushPin_OnTapped" 
+                              Maps:MapControl.NormalizedAnchorPoint="0.5 1">
+                            <Image Source="../Assets/pin.png" MaxHeight="30" MaxWidth="30"></Image>
+                            <TextBlock Text="{x:Bind Description}"  FontSize="20" Foreground="Black"></TextBlock>
+                        </Grid>
+                    </DataTemplate>
+                </Maps:MapItemsControl.ItemTemplate>
+            </Maps:MapItemsControl>
+
+        </Maps:MapControl>
 
     </Grid>
 </Page>

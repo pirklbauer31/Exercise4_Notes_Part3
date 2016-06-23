@@ -53,6 +53,7 @@ namespace Exercise2_Notes.ViewModels
         public bool? OrderAscending { get; set; }
         public bool UpdateNote { get; set; }
         public Note UpdateNoteDummy { get; set; }
+        public string TenantId { get; set; }
 
         public string NewSearchString { get; set; }
         public ObservableCollection<Note> searchedNotes { get; set; }
@@ -103,6 +104,8 @@ namespace Exercise2_Notes.ViewModels
                         var geolocator = new Geolocator();
                         var geoposition = await geolocator.GetGeopositionAsync();
                         CurrentNote.NoteLocation = geoposition.Coordinate.Point;
+                        //PointsOfInterest.Clear();
+                        //PointsOfInterest.Add(new PointOfInterest(CurrentNote.NoteContent, CurrentNote.NoteLocation));
 
                         break;
 
@@ -186,10 +189,22 @@ namespace Exercise2_Notes.ViewModels
             await popupMenu.ShowAsync(listView.RenderTransformOrigin);
         }
 
+        public void UpdatePointsofInterest()
+        {
+            PointsOfInterest.Clear();
+            var tempNotes = dataService.GetAllNotes();
+
+            foreach (var note in tempNotes)
+            {
+                PointsOfInterest.Add(new PointOfInterest(note.NoteContent, note.NoteLocation));
+            }
+        }
+
         public void SavePersist()
         {
             storageService.Write("MaxNotes", MaxNotes);
             storageService.Write("OrderAscending", OrderAscending);
+            storageService.Write("TenantId", TenantId);
 
             storageService.Write(nameof(dataService), dataService.GetAllNotes());
         }
@@ -198,6 +213,7 @@ namespace Exercise2_Notes.ViewModels
         {
             MaxNotes = storageService.Read<int>("MaxNotes", 5);
             OrderAscending = storageService.Read<bool?>("OrderAscending", false);
+            TenantId = storageService.Read<string>("TenantId");
 
             foreach (var note in storageService.Read<List<Note>>(nameof(dataService), null))
             {
@@ -208,6 +224,18 @@ namespace Exercise2_Notes.ViewModels
         public void NavigateToCreateNotePage()
         {
             navigationService.NavigateTo("CreateNotePage");
+        }
+
+        public void NavigateToCreateNotePageFromMap(string description)
+        {
+            var tempNotes = dataService.GetAllNotes();
+
+            tempNotes = tempNotes.Where(n => n.NoteContent.ToLower().Equals(description)).Take(1);
+
+            foreach (var n in tempNotes)
+            {
+                navigationService.NavigateTo("CreateNotePage", n);
+            }
         }
 
         public void NavigateToReadNotePage()

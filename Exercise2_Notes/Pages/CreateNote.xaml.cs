@@ -56,10 +56,13 @@ namespace Exercise2_Notes.Pages
                // ViewModel.NewNoteContent = editNote.NoteContent;
                // ViewModel.NewNoteDateTime = editNote.NoteDateTime;
                 ViewModel.UpdateNote = true;
+                ViewModel.PointsOfInterest.Clear();
+                ViewModel.PointsOfInterest.Add(new PointOfInterest(ViewModel.CurrentNote.NoteContent, ViewModel.CurrentNote.NoteLocation));
             }
 
             if (!ViewModel.UpdateNote)
             {
+                ViewModel.PointsOfInterest.Clear();
                 ViewModel.GetCurrentLocation();
             }
         }
@@ -147,6 +150,7 @@ namespace Exercise2_Notes.Pages
             else
             {
                 ViewModel.AddNote();
+                ViewModel.GetCurrentLocation();
             }
         }
 
