@@ -40,7 +40,10 @@ namespace Exercise2_Notes.Services
             //var query = allNotes.FirstOrDefault(n => String.Equals(n.NoteContent, note.NoteContent) && n.NoteDateTime == note.NoteDateTime);
             //var query =
             //    allNotes.Where(n => String.Equals(n.NoteContent, noteContent)).First(n => n.NoteDateTime.Ticks == noteDateTime.Ticks);
+
+
             var query = allNotes.First(n => String.Equals(n.NoteId, noteToUpdate.NoteId));
+          
 
             allNotes.Remove(query);
 

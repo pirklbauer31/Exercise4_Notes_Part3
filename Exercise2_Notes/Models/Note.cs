@@ -29,14 +29,21 @@ namespace Exercise2_Notes.Models
             NoteLocation = noteLocation;
         }
 
+        [JsonProperty("TenantId")]
+        public string TenantId => "S1510237028";
+
+        [JsonProperty("Content")]
         public string NoteContent { get; set; }
 
+        [JsonProperty("CreatedAt")]
         public DateTime NoteDateTime { get; set; }
 
         public string NoteId { get; set; }
 
+        [JsonProperty("Latitude")]
         public double Latitude { get; set; }
 
+        [JsonProperty("Longitude")]
         public double Longitude { get; set; }
 
         [JsonIgnore]
